@@ -429,7 +429,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
         confirmbtn = Button(text='Confirm Settings', bg='#87ffbf', command=confirm, width=16)
         confirmbtn.grid(column=0, row=defaultrow+3, sticky=W)
 
-        anno = Label(text='Note: Click the Help Button if you do not the the Member Number, same as Blog Number.',justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
+        anno = Label(text='Note: Click the Help Button if you do not know the Member Number, same as Blog Number.',justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
         anno.grid(column=0, row=defaultrow+4, sticky=W)
 
         startbtn = Button(text='Start Job', bg='#a70404', fg=defaultfg, command=startjob, state='disabled')
@@ -582,7 +582,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
         confirmbtn = Button(text='Confirm Settings', bg='#87ffbf', command=confirm, width=16)
         confirmbtn.grid(column=0, row=defaultrow+3, sticky=W)
 
-        anno = Label(text='Note: Click the Help Button if you do not the the Member Number, same as Blog Number.',justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
+        anno = Label(text='Note: Click the Help Button if you do not know the Member Number, same as Blog Number.',justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
         anno.grid(column=0, row=defaultrow+4, sticky=W)
 
         startbtn = Button(text='Start Job', bg='#a70404', fg=defaultfg, command=startjob, state='disabled')
@@ -730,7 +730,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
         confirmbtn = Button(text='Confirm Settings', bg='#87ffbf', command=confirm, width=16)
         confirmbtn.grid(column=0, row=defaultrow+3, sticky=W)
 
-        anno = Label(text='Note: Click the Help Button if you do not the the Member Number, same as Blog Number.',justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
+        anno = Label(text='Note: Click the Help Button if you do not know the Member Number, same as Blog Number.',justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
         anno.grid(column=0, row=defaultrow+4, sticky=W)
 
         startbtn = Button(text='Start Job', bg='#a70404', fg=defaultfg, command=startjob, state='disabled')
@@ -878,7 +878,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
         confirmbtn = Button(text='Confirm Settings', bg='#87ffbf', command=confirm, width=16)
         confirmbtn.grid(column=0, row=defaultrow+3, sticky=W)
 
-        anno = Label(text='Note: Click the Help Button if you do not the the Member Number, same as Blog Number.',justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
+        anno = Label(text='Note: Click the Help Button if you do not know the Member Number, same as Blog Number.',justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
         anno.grid(column=0, row=defaultrow+4, sticky=W)
 
         startbtn = Button(text='Start Job', bg='#a70404', fg=defaultfg, command=startjob, state='disabled')
