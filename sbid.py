@@ -68,13 +68,13 @@ class app:
         return path_label, pathbtn
 
     def now(self):
-        time_label = Label(text=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), font= '"Segoe UI" 14', bg='#121212', fg='#e3e3e3')
+        time_label = Label(text=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), font='"Segoe UI" 14', bg='#121212', fg='#e3e3e3')
         time_label.place(relx=0.86, rely=0)
         time_label.after(1000, self.now)
 
     def n46latestblog(self, bg: str, fg: str, font: str):
         domain = 'https://www.nogizaka46.com/s/n46/diary/detail/'
-        bid = 101858
+        bid = 101916
         url = domain + str(bid)
         searching = True
         while searching:
@@ -82,7 +82,7 @@ class app:
             response = req.head(url)
             if response.status_code == 200:
                 bid +=1
-            if response.status_code == 404:
+            else:
                 searching = False
         url = domain + str(bid-1)
         latest_blog_num = url[url.rfind('/')+1:]
@@ -128,74 +128,33 @@ class app:
             items.extend(win.grid_slaves(column=1,row=12))
             items.extend(win.grid_slaves(column=0,row=13))
             items.extend(win.grid_slaves(column=0,row=14))
-            items.extend(win.grid_slaves(column=0,row=15))
-            
+            items.extend(win.grid_slaves(column=0,row=15))            
         except:
             pass
         for i in items:
             i.destroy()
 
-    def execute_mode0(self):
-        self.clear_previous_mode_items()
-        outputbox = self.outputdetail()
-        path_label, pathbtn = self.get_directory()
-        pwtm.modes.mode0(outputbox, win, path_label, pathbtn)
+    modes = {
+        'Mode 0': 'mode0',
+        'Mode 1': 'mode1',
+        'Mode 2': 'mode2',
+        'Mode 3': 'mode3',
+        'Mode 4': 'mode4',
+        'Mode 5': 'mode5',
+        'Mode 6': 'mode6',
+        'Mode 7': 'mode7'        
+    }
 
-    def execute_mode1(self):
+    def execute_mode(self, mode):
         self.clear_previous_mode_items()
         outputbox = self.outputdetail()
         path_label, pathbtn = self.get_directory()
-        pwtm.modes.mode1(outputbox, win, path_label, pathbtn)
-
-    def execute_mode2(self):
-        self.clear_previous_mode_items()
-        outputbox = self.outputdetail()
-        path_label, pathbtn = self.get_directory()
-        pwtm.modes.mode2(outputbox, win, path_label, pathbtn)
-
-    def execute_mode3(self):
-        self.clear_previous_mode_items()
-        outputbox = self.outputdetail()
-        path_label, pathbtn = self.get_directory()
-        pwtm.modes.mode3(outputbox, win, path_label, pathbtn)
-
-    def execute_mode4(self):
-        self.clear_previous_mode_items()
-        outputbox = self.outputdetail()
-        path_label, pathbtn = self.get_directory()
-        pwtm.modes.mode4(outputbox, win, path_label, pathbtn)
-
-    def execute_mode5(self):
-        self.clear_previous_mode_items()
-        outputbox = self.outputdetail()
-        path_label, pathbtn = self.get_directory()
-        pwtm.modes.mode5(outputbox, win, path_label, pathbtn)
-
-    def execute_mode6(self):
-        self.clear_previous_mode_items()
-        outputbox = self.outputdetail()
-        path_label, pathbtn = self.get_directory()
-        pwtm.modes.mode6(outputbox, win, path_label, pathbtn)
-
-    def execute_mode7(self):
-        self.clear_previous_mode_items()
-        outputbox = self.outputdetail()
-        path_label, pathbtn = self.get_directory()
-        pwtm.modes.mode7(outputbox, win, path_label, pathbtn)
+        getattr(pwtm.modes, mode)(outputbox, win, path_label, pathbtn)
 
     def menu_add_modes(self):
-        self.modemenu.add_radiobutton(label='Mode 0', value='mode0', command=self.execute_mode0)
-        self.modemenu.add_radiobutton(label='Mode 1', value='mode1', command=self.execute_mode1)
-        self.modemenu.add_radiobutton(label='Mode 2', value='mode2', command=self.execute_mode2)
-        self.modemenu.add_radiobutton(label='Mode 3', value='mode3', command=self.execute_mode3)
-        self.modemenu.add_radiobutton(label='Mode 4', value='mode4', command=self.execute_mode4)
-        self.modemenu.add_radiobutton(label='Mode 5', value='mode5', command=self.execute_mode5)
-        self.modemenu.add_radiobutton(label='Mode 6', value='mode6', command=self.execute_mode6)
-        self.modemenu.add_radiobutton(label='Mode 7', value='mode7', command=self.execute_mode7)
-
-
-
-        
+        for k, v in self.modes.items():
+            self.modemenu.add_radiobutton(label=k, value=v, command= lambda mode=v: self.execute_mode(mode))
+      
 def quit():
     if messagebox.askokcancel('Exit', 'Are you sure to exit this program?\nThis will end all current tasks!'):
         win.destroy()
