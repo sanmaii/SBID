@@ -12,7 +12,7 @@ class app:
         self.win.title('Initializing...')
         self.win.config(bg='#121212')
         self.win.resizable(0,0)
-        self.win.iconbitmap('138.ico')
+        self.win.iconbitmap(r'resources\138.ico')
         self.menu = Menu(win)
         self.win.config(menu=self.menu)
         self.modemenu = Menu(self.menu, tearoff=False)
@@ -74,7 +74,7 @@ class app:
 
     def n46latestblog(self, bg: str, fg: str, font: str):
         domain = 'https://www.nogizaka46.com/s/n46/diary/detail/'
-        bid = 101916
+        bid = 102049
         url = domain + str(bid)
         searching = True
         while searching:
