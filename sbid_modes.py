@@ -9,8 +9,6 @@ defaultfg = '#e3e3e3'
 defaultrow = 11
 
 class modes:
-    def __init__(self):
-        pass
 
     def mode0(outputbox: Text, win, path_label, pathbtn: Button):
 
@@ -19,12 +17,10 @@ class modes:
         outputbox.insert(END, 'The information will be shown here.\n')
         outputbox.config(state='disabled')
         
-
         times_label = Label(win, text='Number of Folders:', bg=defaultbg, fg=defaultfg)
         times_label.grid(column=0,row=defaultrow, sticky=W)
         times_entry = Entry(win, width=10)
         times_entry.grid(column=0, row=defaultrow,padx=(120,0), sticky=W)
-
 
         small_num_label = Label(win, text='Smaller Number:', bg=defaultbg, fg=defaultfg)
         small_num_label.grid(column=0,row=defaultrow+1, sticky=W)
@@ -240,7 +236,7 @@ justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
             while bid <= max:
                 if bid < 35979:
                     bid = 35979
-                if bid in range(65327,100041):
+                elif bid in range(65327,100041):
                     bid = 100042
                 page = req.get(url + str(bid))
                 if page.status_code == 404:
@@ -250,11 +246,7 @@ justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
                 images = source.find_all("img")
                 for img in images:  # images is a list.
                     imglink = img.attrs.get("src")
-                    if imglink is None:
-                        continue
-                    if not imglink.startswith("/"):
-                        continue
-                    if imglink.endswith('gif'):
+                    if (imglink is None or not imglink.startswith("/") or imglink.endswith('gif')):
                         continue
                     loc = "https://www.nogizaka46.com" + imglink
                     response = req.head(loc)
@@ -331,7 +323,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                 last_blog = last_page_source.select('div.bl--list a')[-1]['href']
                 blogurl = domain + last_blog
                 searching = True
-                while searching == True:
+                while searching:
                     blogurl_detail = req.get(blogurl)
                     blogurl_source = bs(blogurl_detail.content, 'html.parser')
                     next_page = blogurl_source.select('a.bd--hn__a.hv--op')
@@ -474,7 +466,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                 mem = mem_entry.get()
                 bloglist = main + mem
                 turn = True
-                while turn == True:
+                while turn:
                     bloglist_detail = req.get(bloglist)
                     bloglist_source = bs(bloglist_detail.content, 'html.parser')
                     biggest_page = bloglist_source.select('div.p-pager.p-pager--count > li.c-pager__item--count:not(.is-disable)')[-1]
@@ -489,7 +481,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                 lastblog = bloglist_source.select('div.p-blog-article')[-1].select('a.c-button-blog-detail')[-1]['href']
                 blogurl = domain + lastblog
                 searching = True
-                while searching == True:
+                while searching:
                     blogurl_detail = req.get(blogurl)
                     blogurl_source = bs(blogurl_detail.content, 'html.parser')
                     outputbox.config(state=NORMAL)
@@ -541,13 +533,8 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                 images = source.find_all("img")
                 for img in images:  # images is a list.
                     imgurl = img.attrs.get("src")
-                    if (imgurl is None or imgurl == ""):
-                        continue
-                    if not imgurl.startswith("https://cdn.hinatazaka46.com/files/14"):
-                        continue
-                    if not imgurl.endswith("jpg"):
-                        continue
-                    if imgurl.endswith("jasrac.jpg"):
+                    if (imgurl is None or imgurl == "" or not imgurl.startswith("https://cdn.hinatazaka46.com/files/14") 
+                        or not imgurl.endswith("jpg") or imgurl.endswith("jasrac.jpg")):
                         continue
                     response = req.head(imgurl)
                     if response.status_code != 200:
@@ -634,7 +621,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                 last_blog = last_page_source.select('ul.com-blog-part.box3.fxpc > li a')[-1]['href']
                 blogurl = domain + last_blog
                 searching = True
-                while searching == True:
+                while searching:
                     blogurl_detail = req.get(blogurl)
                     blogurl_source = bs(blogurl_detail.content, 'html.parser')
                     outputbox.config(state=NORMAL)
@@ -683,18 +670,12 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
             while i == 1:
                 page_detail = req.get(url)
                 source = bs(page_detail.content, "html.parser")
-                images = source.find_all("img")
+                images = source.select('div.box-article')[0].select('img')
                 for img in images:  # images is a list.
                     imglink = img.attrs.get("src")
                     if (imglink is None or imglink == ""):
                         continue
-                    if (imglink[-3:] == "svg" or imglink[-3:] == "png"):
-                        continue
-                    if imglink == "/files/14/s46/img/jasrac.jpg":
-                        continue
-                    if imglink == "/images/14/696/0360f2d06af260735aee55ed48de4.jpg":
-                        continue
-                    if not imglink:
+                    elif not imglink:
                         break
                     imgurl = domain + imglink
                     response = req.head(imgurl)
@@ -774,7 +755,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                 mem = mem_entry.get()
                 bloglist = main + mem
                 turn = True
-                while turn == True:
+                while turn:
                     bloglist_detail = req.get(bloglist)
                     bloglist_source = bs(bloglist_detail.content, 'html.parser')
                     biggest_page = bloglist_source.select('div.pager > ul > li')[-1]
@@ -789,7 +770,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                 lastblog = bloglist_source.select('div.box-main > article')[-1].select('li.singlePage > a')[0]['href']
                 blogurl = domain + lastblog
                 searching = True
-                while searching == True:
+                while searching:
                     blogurl_detail = req.get(blogurl)
                     blogurl_source = bs(blogurl_detail.content, 'html.parser')
                     outputbox.config(state=NORMAL)
@@ -843,7 +824,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                     imglink = image.attrs.get("src")
                     if (imglink is None or imglink == ""):
                         continue
-                    if not imglink:
+                    elif not imglink:
                         break
                     response = req.head(imglink)
                     if response.status_code != 200:
