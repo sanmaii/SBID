@@ -74,7 +74,7 @@ class app:
 
     def n46latestblog(self, bg: str, fg: str, font: str):
         domain = 'https://www.nogizaka46.com/s/n46/diary/detail/'
-        bid = 102049
+        bid = 102219
         url = domain + str(bid)
         searching = True
         while searching:
@@ -83,8 +83,15 @@ class app:
             if response.status_code == 200:
                 bid +=1
             else:
-                searching = False
-        url = domain + str(bid-1)
+                code_list = []
+                for i in range(5):
+                    bid +=1
+                    url = domain + str(bid)
+                    response = req.head(url)
+                    code_list.append(response.status_code)
+                if 200 not in code_list:
+                    searching = False
+        url = domain + str(bid-6)
         latest_blog_num = url[url.rfind('/')+1:]
         member_get = bs(req.get(url).content, 'html.parser')
         member = member_get.select('p.bd--prof__name.f--head')[0].text
