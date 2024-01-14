@@ -12,7 +12,7 @@ class app:
         self.win.title('Initializing...')
         self.win.config(bg='#121212')
         self.win.resizable(0,0)
-        self.win.iconbitmap(r'resources\138.ico')
+        # self.win.iconbitmap(r'resources\138.ico')
         self.menu = Menu(win)
         self.win.config(menu=self.menu)
         self.modemenu = Menu(self.menu, tearoff=False)
@@ -74,7 +74,13 @@ class app:
 
     def n46latestblog(self, bg: str, fg: str, font: str):
         domain = 'https://www.nogizaka46.com/s/n46/diary/detail/'
-        bid = 102219
+        filename = 'n46latestblognum.txt'
+        try:
+            with open(filename, 'r') as f:
+                num = int(f.read())
+        except FileNotFoundError:
+            num = 102222
+        bid = num
         url = domain + str(bid)
         searching = True
         while searching:
@@ -92,6 +98,10 @@ class app:
                 if 200 not in code_list:
                     searching = False
         url = domain + str(bid-6)
+        num = bid-6
+        with open(filename, 'w') as f:
+            f.write(str(num))
+        print(num)
         latest_blog_num = url[url.rfind('/')+1:]
         member_get = bs(req.get(url).content, 'html.parser')
         member = member_get.select('p.bd--prof__name.f--head')[0].text
