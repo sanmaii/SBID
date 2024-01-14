@@ -81,7 +81,6 @@ class app:
         except FileNotFoundError:
             num = 102222
         bid = num
-        url = domain + str(bid)
         searching = True
         while searching:
             url = domain + str(bid)
