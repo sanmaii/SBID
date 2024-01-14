@@ -12,7 +12,7 @@ class app:
         self.win.title('Initializing...')
         self.win.config(bg='#121212')
         self.win.resizable(0,0)
-        # self.win.iconbitmap(r'resources\138.ico')
+        self.win.iconbitmap(r'resources\138.ico')
         self.menu = Menu(win)
         self.win.config(menu=self.menu)
         self.modemenu = Menu(self.menu, tearoff=False)
