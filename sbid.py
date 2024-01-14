@@ -101,7 +101,6 @@ class app:
         num = bid-6
         with open(filename, 'w') as f:
             f.write(str(num))
-        print(num)
         latest_blog_num = url[url.rfind('/')+1:]
         member_get = bs(req.get(url).content, 'html.parser')
         member = member_get.select('p.bd--prof__name.f--head')[0].text
