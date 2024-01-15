@@ -79,27 +79,31 @@ class app:
             with open(filename, 'r') as f:
                 num = int(f.read())
         except FileNotFoundError:
-            num = 102222
+            num = 102224
         bid = num
+        lbid = bid
         searching = True
         while searching:
             url = domain + str(bid)
             response = req.head(url)
             if response.status_code == 200:
                 bid +=1
+                lbid +=1
             else:
+                lbid -=1
                 code_list = []
                 for i in range(5):
                     bid +=1
                     url = domain + str(bid)
                     response = req.head(url)
                     code_list.append(response.status_code)
+                    if response.status_code == 200:
+                        lbid = bid
                 if 200 not in code_list:
                     searching = False
-        url = domain + str(bid-6)
-        num = bid-6
+        url = domain + str(lbid)
         with open(filename, 'w') as f:
-            f.write(str(num))
+            f.write(str(lbid))
         latest_blog_num = url[url.rfind('/')+1:]
         member_get = bs(req.get(url).content, 'html.parser')
         member = member_get.select('p.bd--prof__name.f--head')[0].text
