@@ -1,5 +1,9 @@
 import requests as req
 import sbid_modes as pwtm
+import time
+import threading
+import os
+import webbrowser
 from tkinter import *
 from tkinter import messagebox
 from tkinter.filedialog import askdirectory
@@ -12,7 +16,7 @@ class app:
         self.win.title('Initializing...')
         self.win.config(bg='#121212')
         self.win.resizable(0,0)
-        self.win.iconbitmap(r'resources\138.ico')
+        self.win.iconbitmap(self.icon(r'resources\138.ico'))
         self.menu = Menu(win)
         self.win.config(menu=self.menu)
         self.modemenu = Menu(self.menu, tearoff=False)
@@ -23,10 +27,17 @@ class app:
         self.now()
         self.get_directory()
         self.outputdetail()
-        self.n46latestblog('#121212', '#e3e3e3', '"Microsoft JhengHei" 14')
-        self.s46latestblog('#121212', '#e3e3e3', '"Microsoft JhengHei" 14')
-        self.h46latestblog('#121212', '#e3e3e3', '"Microsoft JhengHei" 14')
-
+        self.getlatestblognum()
+    
+    def icon(self, iconloc):
+        if os.path.exists(iconloc):
+            return iconloc
+        else:
+            if os.path.exists(iconloc[iconloc.rfind('\\')+1:]):
+                return iconloc[iconloc.rfind('\\')+1:]
+            else:
+                return None
+            
     def center_window(self, w, h):
         ws = win.winfo_screenwidth()
         hs = win.winfo_screenheight()
@@ -63,7 +74,7 @@ class app:
         path = ''
         path_label = Label(text=path, width=65, relief=SUNKEN)
         path_label.grid(column=0, row=10, sticky=W)
-        pathbtn = Button(text='Save Directory', command=savepath, bg='#bb86fc')
+        pathbtn = Button(text='Save Directory', command=savepath, bg='#bb86fc', cursor='hand2')
         pathbtn.grid(column=1, row=10)
         return path_label, pathbtn
 
@@ -72,6 +83,9 @@ class app:
         time_label.place(relx=0.86, rely=0)
         time_label.after(1000, self.now)
 
+    def openurl(self, domain, lbn):
+            webbrowser.open(f'{domain}{lbn}')
+
     def n46latestblog(self, bg: str, fg: str, font: str):
         domain = 'https://www.nogizaka46.com/s/n46/diary/detail/'
         filename = 'n46latestblognum.txt'
@@ -79,11 +93,10 @@ class app:
             with open(filename, 'r') as f:
                 num = int(f.read())
         except FileNotFoundError:
-            num = 102224
+            num = 102534
         bid = num
         lbid = bid
-        searching = True
-        while searching:
+        while True:
             url = domain + str(bid)
             response = req.head(url)
             if response.status_code == 200:
@@ -100,7 +113,7 @@ class app:
                     if response.status_code == 200:
                         lbid = bid
                 if 200 not in code_list:
-                    searching = False
+                    break
         url = domain + str(lbid)
         with open(filename, 'w') as f:
             f.write(str(lbid))
@@ -109,7 +122,8 @@ class app:
         member = member_get.select('p.bd--prof__name.f--head')[0].text
         date_get = bs(req.get(url).content, 'html.parser')
         date = date_get.select('p.bd--hd__date.a--tx.js-tdi')[0].text
-        n46latestblog_label = Label(text=f'Latest Blog of 乃木坂46: {latest_blog_num} --- {member} {date.replace(".", "/")} (GMT+9)', bg=bg, fg=fg, font=font)
+        n46latestblog_label = Label(text=f'Latest Blog of 乃木坂46: {latest_blog_num} --- {member} {date.replace(".", "/")} (GMT+9)', bg=bg, fg=fg, font=font, cursor='hand2')
+        n46latestblog_label.bind('<Button-1>', lambda x: self.openurl(domain, latest_blog_num))
         n46latestblog_label.grid(column=2, row=1, sticky=W)
 
     def s46latestblog(self, bg: str, fg: str, font: str):    
@@ -119,6 +133,7 @@ class app:
         member = html.select('p.name')[0].text
         date = html.select('p.date.wf-a')[0].text
         s46latestblog_label = Label(text=f'Latest Blog of 櫻坂46: {latest_blog_num} --- {member} {date}', bg=bg, fg=fg, font=font)
+        s46latestblog_label.bind('<Button-1>', lambda x: self.openurl('https://sakurazaka46.com/s/s46/diary/detail/', latest_blog_num))
         s46latestblog_label.grid(column=2, row=2, sticky=W)
 
     def h46latestblog(self, bg: str, fg: str, font: str):
@@ -127,11 +142,21 @@ class app:
         latest_blog_num = latest_blog[latest_blog.rfind('/')+1:latest_blog.rfind('?')]
         member = html.select('div.c-blog-main__name')[0].text
         date = html.select('time.c-blog-main__date')[0].text
-        s46latestblog_label = Label(text=f'Latest Blog of 日向坂46: {latest_blog_num} --- {member.strip()} {date.replace(".", "/")} (GMT+9)', bg=bg, fg=fg, font=font)
-        s46latestblog_label.grid(column=2, row=3, sticky=W)
+        h46latestblog_label = Label(text=f'Latest Blog of 日向坂46: {latest_blog_num} --- {member.strip()} {date.replace(".", "/")} (GMT+9)', bg=bg, fg=fg, font=font)
+        h46latestblog_label.bind('<Button-1>', lambda x: self.openurl('https://www.hinatazaka46.com/s/official/diary/detail/', latest_blog_num))
+        h46latestblog_label.grid(column=2, row=3, sticky=W)
+
+    def getlatestblognum(self):
+        t1 = threading.Thread(target=self.n46latestblog('#121212', '#e3e3e3', '"Microsoft JhengHei" 14'))
+        t2 = threading.Thread(target=self.s46latestblog('#121212', '#e3e3e3', '"Microsoft JhengHei" 14'))
+        t3 = threading.Thread(target=self.h46latestblog('#121212', '#e3e3e3', '"Microsoft JhengHei" 14'))
+        t1.start()
+        t2.start()
+        t3.start()
+        t1.join()
 
     def outputdetail(self):
-        outputbox = Text(win, width=92, height=27, border=2, state='disabled')
+        outputbox = Text(win, width=92, height=27, border=2, state='disabled', cursor='arrow')
         outputbox.place(x=620, y=340)
         bar = Scrollbar(outputbox)
         bar.place(x=630, y=0, relheight=1)
@@ -178,9 +203,11 @@ def quit():
     if messagebox.askokcancel('Exit', 'Are you sure to exit this program?\nThis will end all current tasks!'):
         win.destroy()
 
+start = time.time()
+
 win = Tk()
-size = app.center_window(app, 1280, 720)
 run = app(win)
 win.title('SBID')
 win.protocol('WM_DELETE_WINDOW', quit)
 win.mainloop()
+end = time.time()

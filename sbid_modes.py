@@ -8,7 +8,7 @@ defaultbg = '#121212'
 defaultfg = '#e3e3e3'
 defaultrow = 11
 
-class modes:
+class modes:  
 
     def mode0(outputbox: Text, win, path_label, pathbtn: Button):
 
@@ -63,6 +63,7 @@ class modes:
                 created += 1
             outputbox.config(state='normal')
             outputbox.insert(END, 'Job finished.\n')
+            outputbox.see(END)
             outputbox.config(state='disabled')
             win.update()
             check_finished()
@@ -115,6 +116,7 @@ justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
             outputbox.config(state='normal')
             outputbox.insert(END, filename + '\n')
             outputbox.insert(END, 'Job finished.\n')
+            outputbox.see(END)
             outputbox.config(state='disabled')
             win.update()
             check_finished()
@@ -171,10 +173,12 @@ justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
                     img.write(imgdl)
                 outputbox.config(state='normal')
                 outputbox.insert(END, filename + ' ' + imglink + '\n')
+                outputbox.see(END)
                 outputbox.config(state='disabled')
                 win.update()
             outputbox.config(state='normal')
             outputbox.insert(END, 'Job finished.\n')
+            outputbox.see(END)
             outputbox.config(state='disabled')
             check_finished()
 
@@ -259,11 +263,13 @@ justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
                         f.write(imgdl)
                     outputbox.config(state='normal')
                     outputbox.insert(END, filename + ' ' + imglink + '\n')
+                    outputbox.see(END)
                     outputbox.config(state='disabled')
                     win.update()
                 bid += 1
             outputbox.config(state='normal')
             outputbox.insert(END, 'Job finished.\n')
+            outputbox.see(END)
             outputbox.config(state='disabled')
             check_finished()
 
@@ -322,14 +328,12 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                 last_page_source = bs(last_page_detail.content, 'html.parser')
                 last_blog = last_page_source.select('div.bl--list a')[-1]['href']
                 blogurl = domain + last_blog
-                searching = True
-                while searching:
+                while True:
                     blogurl_detail = req.get(blogurl)
                     blogurl_source = bs(blogurl_detail.content, 'html.parser')
                     next_page = blogurl_source.select('a.bd--hn__a.hv--op')
                     kiji = blogurl_source.find('p', string = '次の記事')
                     if (not next_page or not kiji):
-                        searching = False
                         outputbox.config(state=NORMAL)
                         outputbox.insert(END, blogurl[blogurl.rfind('/')+1:blogurl.rfind('?')] + '\n')
                         outputbox.insert(END, blogurl_source.select('h1.bd--hd__ttl')[0].text +'\n')
@@ -343,11 +347,13 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                         outputbox.config(state=NORMAL)
                         outputbox.insert(END, blogurl[blogurl.rfind('/')+1:blogurl.rfind('?')] + '\n')
                         outputbox.insert(END, blogurl_source.select('h1.bd--hd__ttl')[0].text +'\n')
+                        outputbox.see(END)
                         outputbox.config(state=DISABLED)
                         win.update()
                         blogurl = domain + next_page_link
                 outputbox.config(state=NORMAL)
                 outputbox.insert(END, 'All the blogs are shown above.\n')
+                outputbox.see(END)
                 outputbox.config(state=DISABLED)
 
 
@@ -378,9 +384,8 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
             bid = bid_entry.get()
             name = int(name_entry.get())
             url = main + bid
-            i = 1
 
-            while i == 1:
+            while True:
                 page_detail = req.get(url)
                 source = bs(page_detail.content, "html.parser")
                 images = source.find_all("img")
@@ -398,17 +403,18 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                         f.write(imgdl)
                     outputbox.config(state=NORMAL)
                     outputbox.insert(END, f'{filename} {imgurl} \n')
+                    outputbox.see(END)
                     outputbox.config(state=DISABLED)
                     win.update()
                 next_page = source.select('a.bd--hn__a.hv--op')    # Both previous and next blog are selected.
                 kiji = source.find('p', string = '次の記事')    # For finding if there are blogs behind.
                 if (not next_page or not kiji):    # If there is no blog left then ends.
-                    i = 0
                     break
                 next_page_link = next_page[-1].get('href')    # The first element in the list(next_page) normally is the previous blog, so we choose the last one.
                 url = domain + next_page_link
             outputbox.config(state='normal')
             outputbox.insert(END, 'Job finished.\n')
+            outputbox.see(END)
             outputbox.config(state='disabled')
             check_finished()
 
@@ -465,14 +471,12 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
             else:
                 mem = mem_entry.get()
                 bloglist = main + mem
-                turn = True
-                while turn:
+                while True:
                     bloglist_detail = req.get(bloglist)
                     bloglist_source = bs(bloglist_detail.content, 'html.parser')
                     biggest_page = bloglist_source.select('div.p-pager.p-pager--count > li.c-pager__item--count:not(.is-disable)')[-1]
                     biggest_page_url = biggest_page.select('a')
                     if not biggest_page_url:
-                        turn = False
                         break
                     biggest_page_url = biggest_page_url[0]['href']
                     bloglist = domain + biggest_page_url
@@ -480,23 +484,23 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                 bloglist_source = bs(bloglist_detail.content, 'html.parser')
                 lastblog = bloglist_source.select('div.p-blog-article')[-1].select('a.c-button-blog-detail')[-1]['href']
                 blogurl = domain + lastblog
-                searching = True
-                while searching:
+                while True:
                     blogurl_detail = req.get(blogurl)
                     blogurl_source = bs(blogurl_detail.content, 'html.parser')
                     outputbox.config(state=NORMAL)
                     outputbox.insert(END, blogurl[blogurl.rfind('/')+1:blogurl.rfind('?')] + '\n')
                     outputbox.insert(END, blogurl_source.select('div.c-blog-article__title')[0].text.strip() +'\n')    # Or using re.sub(r'^\s+|\s+$').
+                    outputbox.see(END)
                     outputbox.config(state=DISABLED)
                     win.update()
                     next_page = blogurl_source.select('div.c-pager__item.c-pager__item--next.c-pager__item--kiji.c-pager__item--kiji__blog > a')
                     if not next_page:
-                        searching = False
                         break
                     next_page_url = next_page[0]['href']
                     blogurl = domain + next_page_url
                 outputbox.config(state=NORMAL)
                 outputbox.insert(END, 'All the blogs are shown above.\n')
+                outputbox.see(END)
                 outputbox.config(state=DISABLED)
 
         def confirm():
@@ -525,9 +529,8 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
             bid = bid_entry.get()
             name = int(name_entry.get())
             url = main + bid
-            i = 1
 
-            while i == 1:
+            while True:
                 page_detail = req.get(url)
                 source = bs(page_detail.content, "html.parser")
                 images = source.find_all("img")
@@ -546,17 +549,18 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                         f.write(imgdl)
                     outputbox.config(state=NORMAL)
                     outputbox.insert(END, f'{filename} {imgurl} \n')
+                    outputbox.see(END)
                     outputbox.config(state=DISABLED)
                     win.update()
                 next_page = source.select('div.c-pager__item.c-pager__item--next.c-pager__item--kiji.c-pager__item--kiji__blog > a')
                 if not next_page:
-                    i = 0
                     break
                 for link in next_page:
                     next_page_link = link["href"]
                     url = domain + next_page_link
             outputbox.config(state='normal')
             outputbox.insert(END, 'Job finished.\n')
+            outputbox.see(END)
             outputbox.config(state='disabled')
             check_finished()
 
@@ -620,23 +624,23 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                 last_page_source = bs(last_page_detail.content, 'html.parser')
                 last_blog = last_page_source.select('ul.com-blog-part.box3.fxpc > li a')[-1]['href']
                 blogurl = domain + last_blog
-                searching = True
-                while searching:
+                while True:
                     blogurl_detail = req.get(blogurl)
                     blogurl_source = bs(blogurl_detail.content, 'html.parser')
                     outputbox.config(state=NORMAL)
                     outputbox.insert(END, blogurl[blogurl.rfind('/')+1:blogurl.rfind('?')] + '\n')
                     outputbox.insert(END, blogurl_source.select('h1.title')[0].text +'\n')
+                    outputbox.see(END)
                     outputbox.config(state=DISABLED)
                     win.update()
                     next_page = blogurl_source.select('p.btn-type1s.wf-a.pos-right > a')
                     if not next_page:
-                        searching = False
                         break
                     next_page_url = next_page[0]['href']
                     blogurl = domain + next_page_url
                 outputbox.config(state=NORMAL)
                 outputbox.insert(END, 'All the blogs are shown above.\n')
+                outputbox.see(END)
                 outputbox.config(state=DISABLED)
 
         def confirm():
@@ -665,9 +669,8 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
             bid = bid_entry.get()
             name = int(name_entry.get())
             url = main + bid
-            i = 1
 
-            while i == 1:
+            while True:
                 page_detail = req.get(url)
                 source = bs(page_detail.content, "html.parser")
                 images = source.select('div.box-article')[0].select('img')
@@ -688,17 +691,18 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                         f.write(imgdl)
                     outputbox.config(state=NORMAL)
                     outputbox.insert(END, f'{filename} {imgurl} \n')
+                    outputbox.see(END)
                     outputbox.config(state=DISABLED)
                     win.update()
                 next_page = source.select('p.btn-type1s.wf-a.pos-right > a[href]')
                 if not next_page:
-                    i = 0
                     break
                 for link in next_page:
                     next_page_link = link["href"]
                     url = domain + next_page_link  
             outputbox.config(state='normal')
             outputbox.insert(END, 'Job finished.\n')
+            outputbox.see(END)
             outputbox.config(state='disabled')
             check_finished()
 
@@ -754,14 +758,12 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
             else:
                 mem = mem_entry.get()
                 bloglist = main + mem
-                turn = True
-                while turn:
+                while True:
                     bloglist_detail = req.get(bloglist)
                     bloglist_source = bs(bloglist_detail.content, 'html.parser')
                     biggest_page = bloglist_source.select('div.pager > ul > li')[-1]
                     biggest_page_url = biggest_page.select('a')
                     if not biggest_page_url:
-                        turn = False
                         break
                     biggest_page_url = biggest_page_url[0]['href']
                     bloglist = domain + biggest_page_url
@@ -769,23 +771,23 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                 bloglist_source = bs(bloglist_detail.content, 'html.parser')
                 lastblog = bloglist_source.select('div.box-main > article')[-1].select('li.singlePage > a')[0]['href']
                 blogurl = domain + lastblog
-                searching = True
-                while searching:
+                while True:
                     blogurl_detail = req.get(blogurl)
                     blogurl_source = bs(blogurl_detail.content, 'html.parser')
                     outputbox.config(state=NORMAL)
                     outputbox.insert(END, blogurl[blogurl.rfind('/')+1:blogurl.rfind('?')] + '\n')
                     outputbox.insert(END, blogurl_source.select('div.box-ttl > h3')[0].text.strip() +'\n')    # Or using re.sub(r'^\s+|\s+$').
+                    outputbox.see(END)
                     outputbox.config(state=DISABLED)
                     win.update()
                     next_page = blogurl_source.select('div.btn-navi.btn-next > a')
                     if not next_page:
-                        searching = False
                         break
                     next_page_url = next_page[0]['href']
                     blogurl = domain + next_page_url
                 outputbox.config(state=NORMAL)
                 outputbox.insert(END, 'All the blogs are shown above.\n')
+                outputbox.see(END)
                 outputbox.config(state=DISABLED)
 
         def confirm():
@@ -814,9 +816,8 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
             bid = bid_entry.get()
             name = int(name_entry.get())
             url = main + bid
-            i = 1
 
-            while i == 1:
+            while True:
                 page_detail = req.get(url)
                 source = bs(page_detail.content, "html.parser")
                 images = source.select('div.box-article')[0].select('img')
@@ -836,17 +837,18 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                         f.write(imgdl)
                     outputbox.config(state=NORMAL)
                     outputbox.insert(END, f'{filename} {imglink} \n')
+                    outputbox.see(END)
                     outputbox.config(state=DISABLED)
                     win.update()
                 next_page = source.select('div.btn-navi.btn-next > a[href]')
                 if not next_page:
-                    i = 0
                     break
                 for link in next_page:
                     next_page_link = link["href"]
                     url = domain + next_page_link
             outputbox.config(state='normal')
             outputbox.insert(END, 'Job finished.\n')
+            outputbox.see(END)
             outputbox.config(state='disabled')
             check_finished()
 
