@@ -8,7 +8,7 @@ defaultbg = '#121212'
 defaultfg = '#e3e3e3'
 defaultrow = 11
 
-class modes:  
+class modes:
 
     def mode0(outputbox: Text, win, path_label, pathbtn: Button):
 
@@ -536,7 +536,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                 images = source.find_all("img")
                 for img in images:  # images is a list.
                     imgurl = img.attrs.get("src")
-                    if (imgurl is None or imgurl == "" or not imgurl.startswith("https://cdn.hinatazaka46.com/files/14") 
+                    if (imgurl is None or imgurl == "" or not imgurl.startswith("https://cdn.hinatazaka46.com/") 
                         or not imgurl.endswith("jpg") or imgurl.endswith("jasrac.jpg")):
                         continue
                     response = req.head(imgurl)

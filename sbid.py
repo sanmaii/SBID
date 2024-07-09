@@ -1,6 +1,5 @@
 import requests as req
 import sbid_modes as pwtm
-import time
 import threading
 import os
 import webbrowser
@@ -203,11 +202,8 @@ def quit():
     if messagebox.askokcancel('Exit', 'Are you sure to exit this program?\nThis will end all current tasks!'):
         win.destroy()
 
-start = time.time()
-
 win = Tk()
 run = app(win)
 win.title('SBID')
 win.protocol('WM_DELETE_WINDOW', quit)
 win.mainloop()
-end = time.time()
