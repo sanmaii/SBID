@@ -12,10 +12,14 @@ class modes:
 
     def mode0(outputbox: Text, win, path_label, pathbtn: Button):
 
+        rectxt = r'resources\mode0record.txt'
+        if not os.path.exists(rectxt):
+            with open(rectxt, mode='w') as f:
+                f.write(f'Mode 0\n\n\n\n\n')
+        
         outputbox.config(state='normal')
         outputbox.delete('1.0')
         outputbox.insert(END, 'The information will be shown here.\n')
-        outputbox.config(state='disabled')
         
         times_label = Label(win, text='Number of Folders:', bg=defaultbg, fg=defaultfg)
         times_label.grid(column=0,row=defaultrow, sticky=W)
@@ -31,6 +35,13 @@ class modes:
         big_num_label.grid(column=0,row=defaultrow+2, sticky=W)
         big_num_entry = Entry(win, width=10)
         big_num_entry.grid(column=0, row=defaultrow+2,padx=(120,0), sticky=W)
+
+        with open(rectxt, mode='r', encoding='utf-8') as f:
+            mode0record = f.readlines()
+        outputbox.insert(END, f'Details of the previous job:\nPath: {mode0record[1]}Number of Folders: {mode0record[2]}\
+Smaller Number: {mode0record[3]}Bigger Number: {mode0record[4]}')
+        outputbox.config(state='disabled')
+
 
         def confirm():
             times_entry.config(state='disabled')
@@ -57,7 +68,7 @@ class modes:
             created = 0
             while created < times:
                 pathbtn.config(state='disabled')
-                os.makedirs(path_label['text'] + '\\' + str(small_num) + "-" + str(big_num))
+                os.makedirs(path_label['text'] + '/' + str(small_num) + "-" + str(big_num))
                 small_num = big_num + 1
                 big_num += 1000
                 created += 1
@@ -67,6 +78,12 @@ class modes:
             outputbox.config(state='disabled')
             win.update()
             check_finished()
+            mode0record[1] = path_label['text']
+            mode0record[2] = times_entry.get()
+            mode0record[3] = small_num_entry.get()
+            mode0record[4] = big_num_entry.get()
+            with open(rectxt, mode='w', encoding='utf-8') as f:
+                f.write(f'Mode 0\n{mode0record[1]}\n{mode0record[2]}\n{mode0record[3]}\n{mode0record[4]}\n')
 
         confirmbtn = Button(text='Confirm Settings', bg='#87ffbf', command=confirm, width=16)
         confirmbtn.grid(column=0, row=defaultrow+3, sticky=W)
@@ -110,7 +127,7 @@ justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
             url = url_entry.get()
             r = req.get(url)
             file = url[url.rfind("/"):]
-            filename = path_label['text'] + '\\' + file[1:]        
+            filename = path_label['text'] + '/' + file[1:]        
             with open(filename, mode='wb') as img:
                 img.write(r.content)
             outputbox.config(state='normal')
@@ -167,8 +184,7 @@ justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
                 loc = "https://www.nogizaka46.com" + imglink
                 imgdl = req.get(loc).content
                 file = imglink[imglink.rfind("/"):]
-                filename = path_label['text'] + '\\' + file[1:]
-                print(filename, imglink)
+                filename = path_label['text'] + '/' + file[1:]
                 with open(filename, mode='wb') as img:
                     img.write(imgdl)
                 outputbox.config(state='normal')
@@ -257,7 +273,7 @@ justify=LEFT, wraplength=480, bg=defaultbg, fg=defaultfg)
                     if response.status_code != 200:
                         continue
                     imgdl = req.get(loc).content
-                    filename = path_label['text'] + '\\' + str(name) + '.jpg'
+                    filename = path_label['text'] + '/' + str(name) + '.jpg'
                     name += 1
                     with open(filename, mode='wb') as f:
                         f.write(imgdl)
@@ -284,11 +300,15 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
         startbtn.grid(column=1, row=defaultrow+1)
 
     def mode4(outputbox: Text, win, path_label, pathbtn: Button):
+
+        rectxt = r'resources\mode4record.txt'
+        if not os.path.exists(rectxt):
+            with open(rectxt, mode='w') as f:
+                f.write(f'Mode 4\n\n\n\n\n')
         
         outputbox.config(state='normal')
         outputbox.delete('1.0')
         outputbox.insert(END, 'The information will be shown here.\n')
-        outputbox.config(state='disabled')
 
         mem_label = Label(text='Member Number:', bg=defaultbg, fg=defaultfg)
         mem_label.grid(column=0, row=defaultrow, sticky=W)
@@ -304,6 +324,12 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
         name_label.grid(column=0, row=defaultrow+2, sticky=W)
         name_entry = Entry(win, width=10)
         name_entry.grid(column=0, row=defaultrow+2, padx=(120), sticky=W)
+
+        with open(rectxt, mode='r', encoding='utf-8') as f:
+            mode4record = f.readlines()
+        outputbox.insert(END, f'Details of the previous job:\nPath: {mode4record[1]}Member: {mode4record[2]}\
+Blog Number: {mode4record[3]}Last Image Number: {mode4record[4]}')
+        outputbox.config(state='disabled')
 
         def print_mid():
             outputbox.config(state=NORMAL)
@@ -388,7 +414,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
             while True:
                 page_detail = req.get(url)
                 source = bs(page_detail.content, "html.parser")
-                images = source.find_all("img")
+                images = source.select('div.bd--edit')[0].select('img')
                 for img in images:
                     imgurl = img.attrs.get("src")
                     if (imgurl is None or imgurl == "" or imgurl.endswith('gif') or not imgurl.startswith("/")):
@@ -397,7 +423,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                     if response.status_code != 200:
                         continue
                     imgdl = req.get(domain + imgurl).content
-                    filename = path_label['text'] + '\\' + str(name) + '.jpg'
+                    filename = path_label['text'] + '/' + str(name) + '.jpg'
                     name += 1
                     with open(filename, mode='wb') as f:
                         f.write(imgdl)
@@ -417,6 +443,16 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
             outputbox.see(END)
             outputbox.config(state='disabled')
             check_finished()
+            mode4record[1] = path_label['text']
+            if mem_entry.get() != '':
+                mode4record[2] = f'{source.select("p.bd--prof__name.f--head")[0].text} ({mem_entry.get()})'
+            else:
+                mode4record[2] = f'{source.select("p.bd--prof__name.f--head")[0].text} ({mem.n46dict[source.select("p.bd--prof__name.f--head")[0].text]})'
+            mode4record[3] = source.select('div.bd--cmt__in.js-apicomment')[0].attrs.get('data-api')\
+                [source.select('div.bd--cmt__in.js-apicomment')[0].attrs.get('data-api').rfind('=')+1:]
+            mode4record[4] = str(name-1)
+            with open(rectxt, mode='w', encoding='utf-8') as f:
+                f.write(f'Mode 4\n{mode4record[1]}\n{mode4record[2]}\n{mode4record[3]}\n{mode4record[4]}\n')
 
         mid_need_help = Button(text='Help', bg='#f4ae2f', command=print_mid, width=8)
         mid_need_help.grid(column=0, row=defaultrow, padx=(200), sticky=W)
@@ -435,10 +471,14 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
 
     def mode5(outputbox: Text, win, path_label, pathbtn: Button):
 
+        rectxt = r'resources\mode5record.txt'
+        if not os.path.exists(rectxt):
+            with open(rectxt, mode='w') as f:
+                f.write(f'Mode 5\n\n\n\n\n')
+        
         outputbox.config(state='normal')
         outputbox.delete('1.0')
         outputbox.insert(END, 'The information will be shown here.\n')
-        outputbox.config(state='disabled')
 
         mem_label = Label(text='Member Number:', bg=defaultbg, fg=defaultfg)
         mem_label.grid(column=0, row=defaultrow, sticky=W)
@@ -454,6 +494,12 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
         name_label.grid(column=0, row=defaultrow+2, sticky=W)
         name_entry = Entry(win, width=10)
         name_entry.grid(column=0, row=defaultrow+2, padx=(120), sticky=W)
+
+        with open(rectxt, mode='r', encoding='utf-8') as f:
+            mode5record = f.readlines()
+        outputbox.insert(END, f'Details of the previous job:\nPath: {mode5record[1]}Member: {mode5record[2]}\
+Blog Number: {mode5record[3]}Last Image Number: {mode5record[4]}')
+        outputbox.config(state='disabled')
 
         domain = 'https://www.hinatazaka46.com'
 
@@ -533,17 +579,16 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
             while True:
                 page_detail = req.get(url)
                 source = bs(page_detail.content, "html.parser")
-                images = source.find_all("img")
+                images = source.select('div.p-blog-article')[0].select('img')
                 for img in images:  # images is a list.
                     imgurl = img.attrs.get("src")
-                    if (imgurl is None or imgurl == "" or not imgurl.startswith("https://cdn.hinatazaka46.com/") 
-                        or not imgurl.endswith("jpg") or imgurl.endswith("jasrac.jpg")):
+                    if (imgurl is None or imgurl == "") or not imgurl.endswith("jpg"):
                         continue
                     response = req.head(imgurl)
                     if response.status_code != 200:
                         continue
                     imgdl = req.get(imgurl).content
-                    filename = path_label['text'] + '\\' + str(name) + '.jpg'
+                    filename = path_label['text'] + '/' + str(name) + '.jpg'
                     name += 1
                     with open(filename, mode='wb') as f:
                         f.write(imgdl)
@@ -563,6 +608,16 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
             outputbox.see(END)
             outputbox.config(state='disabled')
             check_finished()
+            mode5record[1] = path_label['text']
+            if mem_entry.get() != '':
+                mode5record[2] = f'{source.select("div.c-blog-member__name")[0].text.strip()} ({mem_entry.get()})'
+            else:
+                mode5record[2] = f'{source.select("div.c-blog-member__name")[0].text.strip()} ({mem.h46dict[source.select("div.c-blog-member__name")[0].text.strip()]})'
+            mode5record[3] = source.find('meta', attrs={'property': 'og:url'}).get('content')\
+                [source.find('meta', attrs={'property': 'og:url'}).get('content').rfind('/')+1:source.find('meta', attrs={'property': 'og:url'}).get('content').rfind('?')]
+            mode5record[4] = str(name-1)
+            with open(rectxt, mode='w', encoding='utf-8') as f:
+                f.write(f'Mode 5\n{mode5record[1]}\n{mode5record[2]}\n{mode5record[3]}\n{mode5record[4]}\n')
 
         mid_need_help = Button(text='Help', bg='#f4ae2f', command=print_mid, width=8)
         mid_need_help.grid(column=0, row=defaultrow, padx=(200), sticky=W)
@@ -580,10 +635,15 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
         startbtn.grid(column=1, row=defaultrow+1)
 
     def mode6(outputbox: Text, win, path_label, pathbtn: Button):
+
+        rectxt = r'resources\mode6record.txt'
+        if not os.path.exists(rectxt):
+            with open(rectxt, mode='w') as f:
+                f.write(f'Mode 6\n\n\n\n\n')
+
         outputbox.config(state='normal')
         outputbox.delete('1.0')
         outputbox.insert(END, 'The information will be shown here.\n')
-        outputbox.config(state='disabled')
 
         mem_label = Label(text='Member Number:', bg=defaultbg, fg=defaultfg)
         mem_label.grid(column=0, row=defaultrow, sticky=W)
@@ -599,6 +659,12 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
         name_label.grid(column=0, row=defaultrow+2, sticky=W)
         name_entry = Entry(win, width=10)
         name_entry.grid(column=0, row=defaultrow+2, padx=(120), sticky=W)
+
+        with open(rectxt, mode='r', encoding='utf-8') as f:
+            mode6record = f.readlines()
+        outputbox.insert(END, f'Details of the previous job:\nPath: {mode6record[1]}Member: {mode6record[2]}\
+Blog Number: {mode6record[3]}Last Image Number: {mode6record[4]}')
+        outputbox.config(state='disabled')
 
         domain = 'https://www.sakurazaka46.com'
 
@@ -685,7 +751,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                     if response.status_code != 200:
                         continue
                     imgdl = req.get(imgurl).content
-                    filename = path_label['text'] + '\\' + str(name) + '.jpg'
+                    filename = path_label['text'] + '/' + str(name) + '.jpg'
                     name += 1
                     with open(filename, mode='wb') as f:
                         f.write(imgdl)
@@ -705,6 +771,16 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
             outputbox.see(END)
             outputbox.config(state='disabled')
             check_finished()
+            mode6record[1] = path_label['text']
+            if mem_entry.get() != '':
+                mode6record[2] = f'{source.select("p.name")[0].text} ({mem_entry.get()})'
+            else:
+                mode6record[2] = f'{source.select("div.blog-foot div.txt p.name")[0].text} ({mem.s46dict[source.select("div.blog-foot div.txt p.name")[0].text]})'
+            mode6record[3] = source.find('meta', attrs={'property': 'og:url'}).get('content')\
+                [source.find('meta', attrs={'property': 'og:url'}).get('content').rfind('/')+1:source.find('meta', attrs={'property': 'og:url'}).get('content').rfind('?')]
+            mode6record[4] = str(name-1)
+            with open(rectxt, mode='w', encoding='utf-8') as f:
+                f.write(f'Mode 6\n{mode6record[1]}\n{mode6record[2]}\n{mode6record[3]}\n{mode6record[4]}\n')
 
         mid_need_help = Button(text='Help', bg='#f4ae2f', command=print_mid, width=8)
         mid_need_help.grid(column=0, row=defaultrow, padx=(200), sticky=W)
@@ -831,7 +907,7 @@ Images in blogs which have been deleted cannot be downloaded.',justify=LEFT, wra
                     if response.status_code != 200:
                         continue
                     imgdl = req.get(imglink).content
-                    filename = path_label['text'] + '\\' + str(name) + '.jpg'
+                    filename = path_label['text'] + '/' + str(name) + '.jpg'
                     name += 1
                     with open(filename, mode='wb') as f:
                         f.write(imgdl)

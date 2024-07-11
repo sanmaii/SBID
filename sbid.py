@@ -87,12 +87,12 @@ class app:
 
     def n46latestblog(self, bg: str, fg: str, font: str):
         domain = 'https://www.nogizaka46.com/s/n46/diary/detail/'
-        filename = 'n46latestblognum.txt'
+        filename = r'resources\n46latestblognum.txt'
         try:
             with open(filename, 'r') as f:
                 num = int(f.read())
         except FileNotFoundError:
-            num = 102534
+            num = 102610
         bid = num
         lbid = bid
         while True:
@@ -129,9 +129,10 @@ class app:
         html = bs(req.get('https://sakurazaka46.com/s/s46/diary/blog/list').content, 'html.parser')
         latest_blog = html.select('li.box > a')[0]['href']
         latest_blog_num = latest_blog[latest_blog.rfind('/')+1:latest_blog.rfind('?')]
-        member = html.select('p.name')[0].text
-        date = html.select('p.date.wf-a')[0].text
-        s46latestblog_label = Label(text=f'Latest Blog of 櫻坂46: {latest_blog_num} --- {member} {date}', bg=bg, fg=fg, font=font)
+        latest_blog_content = bs(req.get(f'https://sakurazaka46.com/s/s46/diary/detail/{latest_blog_num}').content, 'html.parser')
+        member = latest_blog_content.select('div.blog-foot div.txt p.name')[0].text
+        date = latest_blog_content.select('div.blog-foot div.txt p.date.wf-a')[0].text
+        s46latestblog_label = Label(text=f'Latest Blog of 櫻坂46: {latest_blog_num} --- {member} {date} (GMT+9)', bg=bg, fg=fg, font=font, cursor='hand2')
         s46latestblog_label.bind('<Button-1>', lambda x: self.openurl('https://sakurazaka46.com/s/s46/diary/detail/', latest_blog_num))
         s46latestblog_label.grid(column=2, row=2, sticky=W)
 
@@ -141,7 +142,8 @@ class app:
         latest_blog_num = latest_blog[latest_blog.rfind('/')+1:latest_blog.rfind('?')]
         member = html.select('div.c-blog-main__name')[0].text
         date = html.select('time.c-blog-main__date')[0].text
-        h46latestblog_label = Label(text=f'Latest Blog of 日向坂46: {latest_blog_num} --- {member.strip()} {date.replace(".", "/")} (GMT+9)', bg=bg, fg=fg, font=font)
+        h46latestblog_label = Label(text=f'Latest Blog of 日向坂46: {latest_blog_num} --- {member.strip()} {date.replace(".", "/")} (GMT+9)',\
+                                    bg=bg, fg=fg, font=font, cursor='hand2')
         h46latestblog_label.bind('<Button-1>', lambda x: self.openurl('https://www.hinatazaka46.com/s/official/diary/detail/', latest_blog_num))
         h46latestblog_label.grid(column=2, row=3, sticky=W)
 
@@ -155,7 +157,7 @@ class app:
         t1.join()
 
     def outputdetail(self):
-        outputbox = Text(win, width=92, height=27, border=2, state='disabled', cursor='arrow')
+        outputbox = Text(win, width=92, height=27, border=2, state='disabled', cursor='arrow', wrap='word')
         outputbox.place(x=620, y=340)
         bar = Scrollbar(outputbox)
         bar.place(x=630, y=0, relheight=1)
