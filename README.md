@@ -9,5 +9,5 @@ The author (**sanmaii**) will not be responsible if someone uses this app for il
 Please make good use of this app.
 
 ## Installation
-1. Click [here](https://github.com/sanmaii/SBID/releases/latest) to the latest version of `SBID.zip`.
+1. Click [here](https://github.com/sanmaii/SBID/releases/latest) to download the latest version of `SBID.zip`.
 2. Run `sbid.exe`.
