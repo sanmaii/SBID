@@ -5,4 +5,4 @@ test
 *.png
 *.txt
 *.log
-config.ini
+*.ini
