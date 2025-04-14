@@ -7,10 +7,10 @@ from bs4 import BeautifulSoup as bs
 def dl(img_num: int, url: str, directory: str, mode: str):
     domain = 'https://www.sakurazaka46.com'
     dl_count = 0
-    page_detail = req.get(url, timeout=60, headers=headers)
-    source = bs(page_detail.content, "html.parser")
-    images = source.select('div.box-article')[0].select('img')
     while True:
+        page_detail = req.get(url, timeout=60, headers=headers)
+        source = bs(page_detail.content, "html.parser")
+        images = source.select('div.box-article')[0].select('img')
         for img in images:
             imglink = img.attrs.get("src")
             if (imglink is None or imglink == "") or not imglink.endswith("jpg"):
