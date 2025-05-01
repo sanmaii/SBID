@@ -13,16 +13,17 @@ def dl(img_num: int, url: str, directory: str, mode: str):
         images = source.select('div.p-blog-article')[0].select('img')
         for img in images:
             imgurl = img.attrs.get("src")
-            if (imgurl is None or imgurl == "") or not imgurl.endswith("jpg"):
+            if imgurl is None or imgurl == "" or not imgurl.endswith("jpg") or not imgurl.endswith("png"):
                 continue
             retry_count = 0
             max_retries = 10
+            file_type = imgurl[imgurl.rfind("."):]
             while retry_count < max_retries:
                 try:
                     response = req.head(imgurl, timeout=60)
                     if response.status_code == 200:
                         imgdl = req.get(imgurl, headers=headers).content
-                        filename = utils.concat_dir(directory=directory) + '/' + str(img_num) + '.jpg'
+                        filename = utils.concat_dir(directory=directory) + '/' + str(img_num) + file_type
                         output_ui.insert_msg(f'{filename} {imgurl} \n')
                         img_num += 1
                         dl_count += 1
