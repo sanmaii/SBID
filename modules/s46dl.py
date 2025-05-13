@@ -14,6 +14,7 @@ def dl(img_num: int, url: str, directory: str, mode: str):
         for img in images:
             imglink = img.attrs.get("src")
             if imglink.endswith("jpg") or imglink.endswith("png"):
+                file_type = imglink[imglink.rfind("."):]
                 imgurl = domain + imglink
                 retry_count = 0
                 max_retries = 10
@@ -22,7 +23,7 @@ def dl(img_num: int, url: str, directory: str, mode: str):
                         response = req.head(imgurl, timeout=60)
                         if response.status_code == 200:
                             imgdl = req.get(imgurl).content                               
-                            filename = utils.concat_dir(directory=directory) + '/' + str(img_num) + '.jpg'
+                            filename = utils.concat_dir(directory=directory) + '/' + str(img_num) + file_type
                             output_ui.insert_msg(f'{filename} {imgurl} \n')
                             img_num += 1
                             dl_count += 1
