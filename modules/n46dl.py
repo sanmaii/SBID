@@ -13,27 +13,28 @@ def dl(img_num: int, url: str, directory: str, mode: str):
         images = source.select('div.bd--edit')[0].select('img')
         for img in images:
             imglink = img.attrs.get("src")
-            if (imglink is None or imglink == "") or not imglink.endswith("jpg"):
-                continue
+            if imglink.endswith("jpg") or imglink.endswith("png"):     
+                imgurl = domain + imglink
+                retry_count = 0
+                max_retries = 10
+                while retry_count < max_retries:
+                    try:
+                        response = req.head(imgurl, timeout=60)
+                        if response.status_code == 200:
+                            imgdl = req.get(imgurl).content
+                            filename = utils.concat_dir(directory=directory) + '/' + str(img_num) + '.jpg'
+                            output_ui.insert_msg(f'{filename} {imgurl} \n')
+                            img_num += 1
+                            dl_count += 1
+                            with open(filename, mode='wb') as f:
+                                f.write(imgdl)
+                            break
+                    except (req.ConnectionError, req.Timeout) as e:
+                        retry_count += 1
             elif not imglink:
                 break
-            imgurl = domain + imglink
-            retry_count = 0
-            max_retries = 10
-            while retry_count < max_retries:
-                try:
-                    response = req.head(imgurl, timeout=60)
-                    if response.status_code == 200:
-                        imgdl = req.get(imgurl).content
-                        filename = utils.concat_dir(directory=directory) + '/' + str(img_num) + '.jpg'
-                        output_ui.insert_msg(f'{filename} {imgurl} \n')
-                        img_num += 1
-                        dl_count += 1
-                        with open(filename, mode='wb') as f:
-                            f.write(imgdl)
-                        break
-                except (req.ConnectionError, req.Timeout) as e:
-                    retry_count += 1
+            elif imglink is None or imglink == "":
+                continue
         if mode == 'single':
             break
         else:
