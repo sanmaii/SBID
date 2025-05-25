@@ -17,7 +17,7 @@ There are two methods to install SBID:
 3. Run `SBID.exe`.
 
 ### Download by Git
-1. Make sure you have Python version >= `3.10.11`.
+1. Make sure you have installed Git and Python version >= `3.10.11`.
 2. Git clone this repository.
 ```
 git clone https://github.com/sanmaii/SBID.git
