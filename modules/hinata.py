@@ -139,7 +139,7 @@ def download(member: str, lang: str, mem_menu: CTkOptionMenu, blog_menu: CTkOpti
                 return
             else:
                 temp_source = bs(req.get(main + temp_bid, headers=headers).content, 'html.parser')
-                ts_name = temp_source.select('div.c-blog-member__name')[0].text.strip()
+                ts_name = temp_source.select('div.c-blog-article__name')[0].text.strip()
                 if ts_name != mem_menu.get():
                     utils.send_error(lang, 'unmatched_member', additional_msg_back=f' {member}')
                     return
