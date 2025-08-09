@@ -1,3 +1,5 @@
+const preloader = document.getElementById('preloader');
+const mainContent = document.querySelector('.main-content');
 const navLinks = document.querySelectorAll('.nav-link');
 const sections = document.querySelectorAll('.section');
 const particlesContainer = document.getElementById('particles-container');
@@ -29,9 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function preload() {
-    window.onload = function() {
-        const preloader = document.getElementById('preloader');
-        const mainContent = document.querySelector('.main-content');
+    window.onload = function() {    
         mainContent.style.display = 'block';
         preloader.classList.add('fade-out');
         setTimeout(() => {
