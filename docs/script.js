@@ -15,6 +15,7 @@ let sliderInterval = null;
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
+    preload();
     initNavigation();
     initCursor();
     initParticles();
@@ -26,6 +27,19 @@ document.addEventListener('DOMContentLoaded', function() {
     initGotoDownloadPage();
     copytoClipboard();
 });
+
+function preload() {
+    window.onload = function() {
+        const preloader = document.getElementById('preloader');
+        const mainContent = document.querySelector('.main-content');
+        mainContent.style.display = 'block';
+        preloader.classList.add('fade-out');
+        setTimeout(() => {
+            preloader.style.display = 'none';
+        }, 1000);
+    };
+}
+
 
 // 主頁右上角的導航功能
 function initNavigation() {
@@ -137,7 +151,7 @@ async function loadBackgroundImages() {
     const bgContainer = document.getElementById('background-slider');
     bgContainer.innerHTML = '<div class="bg-slide active"></div>';
     let html = '';
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 50; i++) { // 最大背景數量
         html += '<div class="bg-slide"></div>';
     }
     bgContainer.innerHTML += html;
