@@ -34,7 +34,7 @@ body {
     font-size: 1rem;
     z-index: 9999;
     opacity: 1;
-    transition: opacity 1s ease;
+    transition: opacity 1.5s ease;
 }
 
 .loader {
@@ -712,6 +712,10 @@ body {
 
 /* 為闊度不足768px的設計*/
 @media (max-width: 768px) {
+    .cursor {
+        display: none;
+    }
+
     .header {
         flex-direction: column;
         gap: 1rem;
