@@ -39,10 +39,9 @@ def get_blogs(member: str, blog_menu: CTkOptionMenu, lang: str, langconfig: conf
             half = blog_count/2
             if half < 1:
                 half == 1
-            else:
-                half = int(half)
+            half = int(half)
             def get_half(small_num: int, big_num: int):
-                while small_num < big_num:                   
+                while small_num < big_num:         
                     blog_order = bloglist_source.select('div.bl--list a')[small_num]['href']
                     blog_num = blog_order[blog_order.rfind('/')+1:blog_order.rfind('?')]
                     blog_title = bloglist_source.select('p.bl--card__ttl')[small_num].text
