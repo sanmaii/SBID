@@ -9,12 +9,7 @@ The author (**sanmaii**) will not be responsible if someone uses this app for il
 Please make good use of this app.
 
 ## Installation
-There are two methods to install SBID:
-
-### Download from Releases
-1. Click [here](https://github.com/sanmaii/SBID/releases/latest) to download the latest version of `SBID.zip`.
-2. Unzip the zip file.
-3. Run `SBID.exe`.
+For the time being, there is only one method to install SBID:
 
 ### Download by Git
 1. Make sure you have installed Git and Python version >= `3.10.11`.
