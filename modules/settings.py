@@ -9,7 +9,7 @@ config.read(config_file, encoding='utf-8')
 
 # Get the current language of the user interface
 def get_lang():
-    lang_menu_values = ['en_UK', 'zh_CN', 'zh_HK']
+    lang_menu_values = ['en-UK', 'ja-JP', 'zh-CN', 'zh-HK']
     return lang_menu_values
     
 # Change the language
