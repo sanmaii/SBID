@@ -19,6 +19,8 @@ from modules import hinata_ui
 from modules import settings_ui
 from modules import update
 from modules import member
+from modules import settings
+from modules import utils
 from modules.get_icon_path import get_icon_path
 from customtkinter import *
 from datetime import datetime
@@ -28,17 +30,17 @@ from PIL import Image
 class App(CTk):
     def __init__(self):
         super().__init__()
+        self.update_idletasks()
         self.w_mon = self.winfo_screenwidth() # Get the width of the screen
         self.h_mon = self.winfo_screenheight() # Get the height of the screen
         self.w_size = int(self.w_mon/2)
         self.h_size = int(self.h_mon/2)
         self.x_pos = int((self.w_mon-self.w_size)/2) # Set app's x position.
-        self.y_pos = int((self.h_mon-self.h_size)/2) # Set app's y postiopn.
+        self.y_pos = int((self.h_mon-self.h_size)/2) # Set app's y position.
         self.title(f'SBID {version.version}')
-        self.iconbitmap(get_icon_path(r'resources\138.ico'))
+        self.iconbitmap(get_icon_path('resources/138.ico'))
         self.geometry('%dx%d+%d+%d' % (self.w_size, self.h_size, self.x_pos, self.y_pos))
-        self.minsize(300,200)
-        self.resizable(0,0)
+        self.minsize(680,400)
         # Load config
         self.config_file = './config.ini'
         self.config = configparser.ConfigParser()
@@ -46,7 +48,7 @@ class App(CTk):
         self.theme = self.config.get('Settings', 'theme', fallback='Dark')
         set_appearance_mode(self.theme)
         # Load language config
-        self.language = self.config.get('Settings', 'lang', fallback='en_UK')
+        self.language = self.config.get('Settings', 'lang', fallback='en-UK')
         self.langconfig = configparser.ConfigParser()
         self.load_locale()
         # Load member config
@@ -60,7 +62,7 @@ class App(CTk):
         # Load the perferred settings in the configuration file
         # Create a config file if it does not exist
         if not os.path.exists(self.config_file):
-            self.config['Settings'] = {'lang': 'en_UK',
+            self.config['Settings'] = {'lang': 'en-UK',
                                         'theme': 'Dark'}
             with open(self.config_file, 'w', encoding='utf-8') as f:
                 self.config.write(f)
@@ -69,6 +71,10 @@ class App(CTk):
             self.config.read(self.config_file, encoding='utf-8')
 
     def load_locale(self):
+        # Ensure the language code is valid
+        if self.language not in settings.get_lang():
+            utils.modify_config(self.config_file, 'Settings', 'lang', 'en-UK')
+            self.language = 'en-UK'
         # Load language settings file
         try:
             self.langconfig.read(f'languages/locales/{self.language}.ini', encoding='utf-8')
@@ -121,9 +127,10 @@ class App(CTk):
         hinata_button.grid(row=3, column=2, padx=20, pady=20, sticky='ew')
 
         # Date and time
+        datetime_label = CTkLabel(frame, text='', font=CTkFont(size=20))
+        datetime_label.grid(row=4, column=0, columnspan=2, padx=20, pady=20, sticky='w')
         def update_datetime():
-            datetime_label = CTkLabel(frame, text=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), font=CTkFont(size=20))
-            datetime_label.grid(row=4, column=0, padx=20, pady=20, sticky='w')
+            datetime_label.configure(text=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             datetime_label.after(1000, update_datetime)
         update_datetime()
 
