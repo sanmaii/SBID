@@ -5,12 +5,13 @@ def output_ui():
     # Basic properties
     output_window = CTkToplevel()
     output_window.title("Output")
+    output_window.focus()
     w_mon = output_window.winfo_screenwidth()
     h_mon = output_window.winfo_screenheight()
     w_size = int(w_mon/2.4)
     h_size = int(h_mon/2.8)
-    output_window.geometry('%dx%d' % (w_size, h_size))
-    output_window.resizable(0,0)
+    output_window.geometry(f'{w_size}x{h_size}')
+    output_window.minsize(600, 400)
     output_window.configure(padx=20, pady=20)
 
 
