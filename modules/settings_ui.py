@@ -6,12 +6,11 @@ def settings_ui(lang: str):
     # Basic properties
     settings_window = CTkToplevel()
     settings_window.title("Settings")
+    settings_window.focus()
     w_mon = settings_window.winfo_screenwidth()
     h_mon = settings_window.winfo_screenheight()
-    w_size = int(w_mon/3)
-    h_size = int(h_mon/3)
-    settings_window.geometry('%dx%d' % (w_size, h_size))
-    settings_window.resizable(0,0)
+    settings_window.geometry(f'{int(w_mon/3)}x{int(h_mon/3)}')
+    settings_window.minsize(300, 200)
     settings_window.configure(padx=20, pady=20)
 
     # Config
